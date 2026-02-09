@@ -17,6 +17,7 @@ import glob
 import json
 import csv
 import argparse
+import math
 from typing import Dict, List, Any, Tuple, Optional
 
 
@@ -90,11 +91,31 @@ def extract_month_entries(ds: Dict[str, Any]) -> List[Dict[str, Any]]:
     each item containing 'G0' (0..11) and 'X' (list per-year values).
     """
     dm0 = get_nested(ds, ["results", 0, "result", "data", "dsr", "DS", 0, "PH", 0, "DM0"], default=[])
-    print("here", dm0)
     # Ensure sorted by G0 index if present
     def sort_key(item):
         return item.get("G0", 0)
     return sorted(dm0, key=sort_key)
+
+
+def coerce_numeric(val: Any) -> Optional[float]:
+    """
+    Coerce numeric values that may be encoded as strings (e.g., "0.123", "1e-4").
+    Returns None if the value cannot be parsed as a finite float.
+    """
+    if isinstance(val, (int, float)):
+        num = float(val)
+        return num if math.isfinite(num) else None
+    if isinstance(val, str):
+        s = val.strip()
+        if not s:
+            return None
+        s = s.replace(",", "")
+        try:
+            num = float(s)
+            return num if math.isfinite(num) else None
+        except ValueError:
+            return None
+    return None
 
 
 def pick_metric_key(x_item: Dict[str, Any]) -> Optional[str]:
@@ -126,21 +147,29 @@ def extract_route_values(ds: Dict[str, Any]) -> Tuple[List[str], Dict[str, float
     for m_entry in month_entries:
         # Month index -> month name
         m_idx = m_entry.get("G0")
-        print("here", m_idx)
         if not isinstance(m_idx, int) or m_idx < 0 or m_idx >= len(months):
             continue
         month_name = months[m_idx]
         x_list = m_entry.get("X", [])
-        # Each x_list item corresponds to a year in the same order as 'years'
-        for yi, year in enumerate(years):
-            if yi >= len(x_list):
+        # Each x_list item corresponds to a year; when "I" appears it indicates
+        # a missing prior year, so shift the JSON index forward for this and
+        # subsequent items to align with the years list.
+        offset = 0
+        for x_pos, x_item in enumerate(x_list):
+            if not isinstance(x_item, dict):
                 continue
-            metric_key = pick_metric_key(x_list[yi]) if isinstance(x_list[yi], dict) else None
-            if metric_key and metric_key in x_list[yi]:
-                val = x_list[yi][metric_key]
-                # Accept numbers only
-                if isinstance(val, (int, float)):
-                    values[f"{year}-{month_name}"] = float(val)
+            if isinstance(x_item.get("I"), int):
+                offset = max(offset, x_item["I"] - x_pos)
+            year_idx = x_pos + offset
+            if year_idx < 0 or year_idx >= len(years):
+                continue
+            year = years[year_idx]
+            metric_key = pick_metric_key(x_item)
+            if metric_key and metric_key in x_item:
+                val = x_item[metric_key]
+                num = coerce_numeric(val)
+                if num is not None:
+                    values[f"{year}-{month_name}"] = num
 
     return years, values
 
