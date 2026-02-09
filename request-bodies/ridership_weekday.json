@@ -10,19 +10,18 @@
                 "Version": 2,
                 "From": [
                   {
+                    "Name": "r",
+                    "Entity": "Ridership_Monthly_Route_Avg",
+                    "Type": 0
+                  },
+                  {
                     "Name": "d",
                     "Entity": "Date Lookup",
                     "Type": 0
                   },
-
                   {
                     "Name": "r1",
                     "Entity": "Route_Code_Lookup",
-                    "Type": 0
-                  },
-                  {
-                    "Name": "r",
-                    "Entity": "Ridership_Monthly_Route_Avg",
                     "Type": 0
                   },
                   {
@@ -32,6 +31,22 @@
                   }
                 ],
                 "Select": [
+                  {
+                    "Aggregation": {
+                      "Expression": {
+                        "Column": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Source": "r"
+                            }
+                          },
+                          "Property": "Avg_Riders"
+                        }
+                      },
+                      "Function": 0
+                    },
+                    "Name": "Sum(Ridership_Monthly_Route_Avg.Avg_Riders)"
+                  },
                   {
                     "Column": {
                       "Expression": {
@@ -53,22 +68,6 @@
                       "Property": "year"
                     },
                     "Name": "Date Lookup.year"
-                  },
-                  {
-                    "Aggregation": {
-                      "Expression": {
-                        "Column": {
-                          "Expression": {
-                            "SourceRef": {
-                              "Source": "r"
-                            }
-                          },
-                          "Property": "Avg_Riders"
-                        }
-                      },
-                      "Function": 0
-                    },
-                    "Name": "Sum(Ridership_Monthly_Route_Avg.Avg_Riders)"
                   }
                 ],
                 "Where": [

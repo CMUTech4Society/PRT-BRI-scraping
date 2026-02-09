@@ -165,6 +165,27 @@
                           [
                             {
                               "Literal": {
+                                "Value": "'2022'"
+                              }
+                            }
+                          ],
+                          [
+                            {
+                              "Literal": {
+                                "Value": "'2021'"
+                              }
+                            }
+                          ],
+                          [
+                            {
+                              "Literal": {
+                                "Value": "'2020'"
+                              }
+                            }
+                          ],
+                          [
+                            {
+                              "Literal": {
                                 "Value": "'2019'"
                               }
                             }
@@ -240,16 +261,6 @@
               },
               "ExecutionMetricsKind": 1
             }
-          }
-        ]
-      },
-      "QueryId": "",
-      "ApplicationContext": {
-        "DatasetId": "c4ca84e7-3cc9-482f-8a6b-5867713b52cd",
-        "Sources": [
-          {
-            "ReportId": "a30550bb-57b1-4415-a2dd-66d04fc4a13d",
-            "VisualId": "882e1bfc24de413b6973"
           }
         ]
       }
