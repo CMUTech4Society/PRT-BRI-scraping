@@ -1,0 +1,271 @@
+{
+  "version": "1.0.0",
+  "queries": [
+    {
+      "Query": {
+        "Commands": [
+          {
+            "SemanticQueryDataShapeCommand": {
+              "Query": {
+                "Version": 2,
+                "From": [
+                  {
+                    "Name": "r",
+                    "Entity": "Ridership_Monthly_Route_Avg",
+                    "Type": 0
+                  },
+                  {
+                    "Name": "d",
+                    "Entity": "Date Lookup",
+                    "Type": 0
+                  },
+                  {
+                    "Name": "r1",
+                    "Entity": "Route_Code_Lookup",
+                    "Type": 0
+                  },
+                  {
+                    "Name": "d1",
+                    "Entity": "Day Type Lookup",
+                    "Type": 0
+                  }
+                ],
+                "Select": [
+                  {
+                    "Aggregation": {
+                      "Expression": {
+                        "Column": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Source": "r"
+                            }
+                          },
+                          "Property": "Avg_Riders"
+                        }
+                      },
+                      "Function": 0
+                    },
+                    "Name": "Sum(Ridership_Monthly_Route_Avg.Avg_Riders)"
+                  },
+                  {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Source": "d"
+                        }
+                      },
+                      "Property": "month abbr"
+                    },
+                    "Name": "Date Lookup.month name"
+                  },
+                  {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Source": "d"
+                        }
+                      },
+                      "Property": "year"
+                    },
+                    "Name": "Date Lookup.year"
+                  }
+                ],
+                "Where": [
+                  {
+                    "Condition": {
+                      "In": {
+                        "Expressions": [
+                          {
+                            "Column": {
+                              "Expression": {
+                                "SourceRef": {
+                                  "Source": "r1"
+                                }
+                              },
+                              "Property": "Clever_Reports_Trim"
+                            }
+                          }
+                        ],
+                        "Values": [
+                          [
+                            {
+                              "Literal": {
+                                "Value": "'1 - FREEPORT ROAD'"
+                              }
+                            }
+                          ]
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "Condition": {
+                      "In": {
+                        "Expressions": [
+                          {
+                            "Column": {
+                              "Expression": {
+                                "SourceRef": {
+                                  "Source": "d1"
+                                }
+                              },
+                              "Property": "name clean"
+                            }
+                          }
+                        ],
+                        "Values": [
+                          [
+                            {
+                              "Literal": {
+                                "Value": "'Saturday'"
+                              }
+                            }
+                          ]
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "Condition": {
+                      "In": {
+                        "Expressions": [
+                          {
+                            "Column": {
+                              "Expression": {
+                                "SourceRef": {
+                                  "Source": "d"
+                                }
+                              },
+                              "Property": "year"
+                            }
+                          }
+                        ],
+                        "Values": [
+                          [
+                            {
+                              "Literal": {
+                                "Value": "'2025'"
+                              }
+                            }
+                          ],
+                          [
+                            {
+                              "Literal": {
+                                "Value": "'2024'"
+                              }
+                            }
+                          ],
+                          [
+                            {
+                              "Literal": {
+                                "Value": "'2023'"
+                              }
+                            }
+                          ],
+                          [
+                            {
+                              "Literal": {
+                                "Value": "'2022'"
+                              }
+                            }
+                          ],
+                          [
+                            {
+                              "Literal": {
+                                "Value": "'2021'"
+                              }
+                            }
+                          ],
+                          [
+                            {
+                              "Literal": {
+                                "Value": "'2020'"
+                              }
+                            }
+                          ],
+                          [
+                            {
+                              "Literal": {
+                                "Value": "'2019'"
+                              }
+                            }
+                          ]
+                        ]
+                      }
+                    }
+                  }
+                ],
+                "OrderBy": [
+                  {
+                    "Direction": 1,
+                    "Expression": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Source": "d"
+                          }
+                        },
+                        "Property": "month abbr"
+                      }
+                    }
+                  },
+                  {
+                    "Direction": 1,
+                    "Expression": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Source": "d"
+                          }
+                        },
+                        "Property": "year"
+                      }
+                    }
+                  }
+                ]
+              },
+              "Binding": {
+                "Primary": {
+                  "Groupings": [
+                    {
+                      "Projections": [
+                        0,
+                        1
+                      ]
+                    }
+                  ]
+                },
+                "Secondary": {
+                  "Groupings": [
+                    {
+                      "Projections": [
+                        2
+                      ]
+                    }
+                  ]
+                },
+                "DataReduction": {
+                  "DataVolume": 4,
+                  "Primary": {
+                    "Window": {
+                      "Count": 200
+                    }
+                  },
+                  "Secondary": {
+                    "Top": {
+                      "Count": 60
+                    }
+                  }
+                },
+                "Version": 1
+              },
+              "ExecutionMetricsKind": 1
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "cancelQueries": [],
+  "modelId": 3800662
+}
