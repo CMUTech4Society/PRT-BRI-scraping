@@ -48,7 +48,7 @@ def get_requests_body(request_body_path):
 def get_routes(route_path):
     # List of routes
     routes = []
-    with open('routes.txt', 'r') as f:
+    with open(route_path, 'r') as f:
         for line in f:
             routes.append(line.strip())
     return routes
